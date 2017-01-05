@@ -163,7 +163,7 @@ class Campaign(BaseChimpObject):
 class Member(BaseChimpObject):
     _attrs = ('email', 'timestamp')
     
-    _extended_attrs = ('id', 'ip_opt', 'ip_signup', 'merges', 'status', 'interests')
+    _extended_attrs = ('id', 'ip_opt', 'ip_signup', 'merge_fields', 'status', 'interests')
 
     verbose_attr = 'email'
     cache_key = 'email'
@@ -178,7 +178,11 @@ class Member(BaseChimpObject):
         if attr in self._extended_attrs:
             return self.info[attr]
         raise AttributeError, attr
-    
+
+    @property
+    def merges(self):
+        return self.merge_fields
+
     @property
     def info(self):
         return self.get_info()
