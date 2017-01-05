@@ -117,13 +117,15 @@ class Connection(object):
                        email_address,
                        merge_vars,
                        email_type='text',
-                       status='subscribed'):
+                       status='subscribed',
+                       interests=None):
         path = 'lists/{}/members'.format(id)
         payload = {
             'email_type': email_type,
             'status': status,
             'merge_fields': merge_vars,
             'email_address': email_address,
+            'interests': interests,
         }
         return self.make_request('POST', path, body=payload)
 
@@ -144,13 +146,15 @@ class Connection(object):
                            id,
                            email_address,
                            merge_vars,
-                           email_type=None):
+                           email_type=None,
+                           interests=None):
         email_hash = self._get_email_hash(email_address)
         path = 'lists/{}/members/{}'.format(id, email_hash)
         payload = {
             'email_type': email_type,
             'merge_fields': merge_vars,
             'email_address': email_address,
+            'interests': interests,
         }
         return self.make_request('PATCH', path, body=payload)
 
@@ -186,6 +190,10 @@ class Connection(object):
     def list_interest_groupings(self, id):
         path = 'lists/{}/interest-categories'.format(id)
         return self.make_request('GET', path)
+
+    def list_interest_groups(self, id, grouping_id, count=30):
+        path = 'lists/{}/interest-categories/{}/interests'.format(id, grouping_id)
+        return self.make_request('GET', path, queries={'count': count})
 
     def list_interest_group_add(self, id, grouping_id, name):
         path = 'lists/{}/interest-categories/{}/interests'.format(id, grouping_id)

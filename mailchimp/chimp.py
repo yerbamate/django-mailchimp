@@ -163,8 +163,8 @@ class Campaign(BaseChimpObject):
 class Member(BaseChimpObject):
     _attrs = ('email', 'timestamp')
     
-    _extended_attrs = ('id', 'ip_opt', 'ip_signup', 'merges', 'status')
-    
+    _extended_attrs = ('id', 'ip_opt', 'ip_signup', 'merges', 'status', 'interests')
+
     verbose_attr = 'email'
     cache_key = 'email'
     
@@ -180,10 +180,6 @@ class Member(BaseChimpObject):
         raise AttributeError, attr
     
     @property
-    def interests(self):
-        return [i.strip() for i in self.merges['INTERESTS'].split(',')]
-    
-    @property
     def info(self):
         return self.get_info()
             
@@ -191,7 +187,7 @@ class Member(BaseChimpObject):
         return self.cache.get('list_member_info', self.con.list_member_info, self.master.id, self.email)
     
     def update(self):
-        return self.con.list_update_member(self.master.id, self.email, self.merges)
+        return self.con.list_update_member(self.master.id, self.email, self.merges, interests=self.interests)
     
     
 class LazyMemberDict(dict):
