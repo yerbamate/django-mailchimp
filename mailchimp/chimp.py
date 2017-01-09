@@ -20,8 +20,8 @@ from .settings import WEBHOOK_KEY
 
 class SegmentCondition(object):
     OPERATORS = {
-        'eq': lambda a,b: a == b,
-        'ne': lambda a,b: a != b,
+        'is': lambda a,b: a == b,
+        'not': lambda a,b: a != b,
         'gt': lambda a,b: a > b,
         'lt': lambda a,b: a < b,
         'like': lambda a,b: a in b,
@@ -30,7 +30,8 @@ class SegmentCondition(object):
         'ends': lambda a,b: str(a).endswith(str(b))
     }
     
-    def __init__(self, field, op, value):
+    def __init__(self, condition_type, field, op, value):
+        self.condition_type = condition_type
         self.field = field
         self.op = op
         self.value = value
@@ -128,9 +129,7 @@ class Campaign(BaseChimpObject):
         return self._content
     
     def send_now_async(self):
-        now = datetime.datetime.utcnow()
-        soon = now + datetime.timedelta(minutes=1)
-        return self.schedule(soon)
+        return self.send_now()
 
     def delete(self):
         return self.con.campaign_delete(self.id)

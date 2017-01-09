@@ -6,7 +6,7 @@ from warnings import warn
 from requests import request
 from requests.exceptions import HTTPError
 
-from .utils import transform_datetime
+from .utils import ceil_dt, transform_datetime
 
 
 def remove_empty(d):
@@ -79,6 +79,8 @@ class Connection(object):
 
         if response.status_code == 204:
             return {'success': True}
+
+        print response.json()
 
         try:
             response.raise_for_status()
@@ -328,9 +330,10 @@ class Connection(object):
 
     def campaign_schedule(self, cid, schedule_time):
         path = 'campaigns/{}/actions/schedule'.format(cid)
+        schedule_time = ceil_dt(schedule_time)
         schedule_time = transform_datetime(schedule_time)
         payload = {
-            'schedule_time': transform_datetime(schedule_time),
+            'schedule_time': schedule_time,
         }
         return self.make_request('POST', path, body=payload)
 
