@@ -80,8 +80,6 @@ class Connection(object):
         if response.status_code == 204:
             return {'success': True}
 
-        print response.json()
-
         try:
             response.raise_for_status()
         except HTTPError, e:
