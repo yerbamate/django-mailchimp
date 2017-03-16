@@ -163,6 +163,11 @@ class Connection(object):
         path = 'lists/{}/members/{}'.format(id, email_hash)
         return self.make_request('GET', path)
 
+    def list_member_info_from_id(self, id, email_id):
+        path = 'lists/{}/members'.format(id)
+        queries = {'unique_email_id': email_id}
+        return self.make_request('GET', path, queries=queries)
+
     def list_members(self, id, status='subscribed', since=None, offset=0, limit=100):
         path = 'lists/{}/members'.format(id)
         queries = {
