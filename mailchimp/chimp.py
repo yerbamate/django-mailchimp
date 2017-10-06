@@ -3,7 +3,11 @@ from __future__ import unicode_literals
 import datetime
 
 from django.core.urlresolvers import reverse
-from django.contrib.sites.models import Site
+from django.conf import settings
+try:
+    from django.contrib.sites.models import Site
+except:
+    Site = None
 
 from .chimpy.chimpy import Connection as BaseConnection, ChimpyException
 from .utils import wrap, build_dict, Cache, WarningLogger
@@ -280,7 +284,10 @@ class List(BaseChimpObject):
         return self.add_webhook(url, actions, sources)
     
     def install_webhook(self):
-        domain = Site.objects.get_current().domain
+        if Site:
+            domain = Site.objects.get_current().domain
+        else:
+            domain = getattr(settings, 'MAILCHIMP_DOMAIN', 'www.example.com')
         if not (domain.startswith('http://') or domain.startswith('https://')):
             domain = 'http://%s' % domain
         if domain.endswith('/'):
